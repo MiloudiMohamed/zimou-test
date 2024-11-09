@@ -5,6 +5,17 @@
         progress-indicator
     >
 
+        <x-slot:actions>
+            <x-form wire:submit.prevent="export">
+                <x-button
+                    type="submit"
+                    icon="o-arrow-down-tray"
+                    class="btn-outline text-sm"
+                >
+                    Export Packages
+                </x-button>
+            </x-form>
+        </x-slot:actions>
     </x-header>
 
     <x-card>
@@ -12,7 +23,7 @@
             :headers="[
                 ['key' => 'tracking_code', 'label' => 'Tracking Code'],
                 ['key' => 'store.name', 'label' => 'Store'],
-                ['key' => 'name', 'label' => 'Name'],
+                ['key' => 'name', 'label' => 'Package name'],
                 ['key' => 'status.name', 'label' => 'Status'],
                 ['key' => 'client_name', 'label' => 'Client'],
                 ['key' => 'client_phone', 'label' => 'Phone'],
