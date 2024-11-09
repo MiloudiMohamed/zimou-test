@@ -34,10 +34,9 @@
             <x-app-brand class="p-5 pt-3" />
 
             <x-menu activate-by-route>
-
                 <x-menu-item
-                    title="Home"
-                    icon="o-home"
+                    title="Packages"
+                    icon="o-cube"
                     link="/"
                 />
             </x-menu>
