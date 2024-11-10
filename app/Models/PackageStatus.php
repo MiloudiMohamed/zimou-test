@@ -2,12 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PackageStatus extends Model
 {
     use HasFactory;
+
+    public function scopePending(Builder $query): Builder
+    {
+        return $query->where('name', 'pending');
+    }
+
+    public function scopeAccepted(Builder $query): Builder
+    {
+        return $query->where('name', 'accepted');
+    }
+
+    public function scopeCanceled(Builder $query): Builder
+    {
+        return $query->where('name', 'cancelled');
+    }
 
     public function getColor(): string
     {

@@ -15,6 +15,15 @@
                     Export Packages
                 </x-button>
             </x-form>
+
+            <x-button
+                type="submit"
+                icon="o-plus"
+                class="btn-primary text-sm"
+                link="{{ route('packages.create') }}"
+            >
+                Create
+            </x-button>
         </x-slot:actions>
     </x-header>
 

@@ -7,10 +7,20 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Package extends Model
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $model) {
+            $model->tracking_code = 'ZE-'.Str::random(10);
+            $model->uuid = (string) Str::uuid();
+            $model->status_id = PackageStatus::pending()->first()->getKey();
+        });
+    }
 
     public function store(): BelongsTo
     {

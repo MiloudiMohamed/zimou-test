@@ -2,6 +2,7 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\CreatePackage;
 use App\Livewire\ListPackages;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', ListPackages::class)->name('packages.index');
+    Route::get('/packages/create', CreatePackage::class)->name('packages.create');
 });
 
 Route::group(['middleware' => 'guest'], function () {
