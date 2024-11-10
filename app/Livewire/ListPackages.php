@@ -33,7 +33,7 @@ class ListPackages extends Component
 
         $packages = Package::query()
             ->select([
-                'tracking_code', 'name', 'client_first_name', 'client_last_name',
+                'id', 'tracking_code', 'name', 'client_first_name', 'client_last_name',
                 'client_phone', 'store_id', 'status_id', 'delivery_type_id', 'commune_id',
             ])
             ->with([

@@ -28,7 +28,7 @@ class StoreFactory extends Factory
             'register_commerce_number' => fake()->optional()->regexify('[0-9]{10}'),
             'nif' => fake()->optional()->regexify('[0-9]{15}'),
             'legal_form' => fake()->numberBetween(1, 5),
-            'status' => fake()->boolean(),
+            'status' => true,
             'can_update_preparing_packages' => fake()->boolean(),
         ];
     }

@@ -49,8 +49,8 @@ class Package extends Model
         );
     }
 
-    public function scopePendingFirst(Builder $query, PackageStatus $status): Builder
+    public function scopePendingFirst(Builder $query, ?PackageStatus $status): Builder
     {
-        return $query->orderByRaw('CASE WHEN status_id = ? THEN 0 ELSE 1 END', [$status->id]);
+        return $query->orderByRaw('CASE WHEN status_id = ? THEN 0 ELSE 1 END', [$status?->id]);
     }
 }

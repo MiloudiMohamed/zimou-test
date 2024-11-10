@@ -22,7 +22,7 @@ class PackageFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'tracking_code' => 'ZE-'.strtoupper(Str::random(10)),
             'commune_id' => Commune::factory(),
             'delivery_type_id' => DeliveryType::factory(),
