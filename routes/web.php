@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Register;
 use App\Livewire\ListPackages;
 use Illuminate\Support\Facades\Route;
 
@@ -14,4 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', ListPackages::class);
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', ListPackages::class)->name('packages.index');
+});
+
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('/auth/login', Login::class)->name('login');
+    Route::get('/auth/register', Register::class)->name('register');
+});

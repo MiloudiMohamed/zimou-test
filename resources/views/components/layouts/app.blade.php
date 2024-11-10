@@ -12,16 +12,31 @@
 
 <body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200">
 
-    {{-- Mobile Navbar --}}
-    <x-nav sticky class="lg:hidden">
+    <x-nav sticky full-width>
         <x-slot:brand>
-            <x-app-brand />
-        </x-slot:brand>
-        <x-slot:actions>
-            <label for="main-drawer" class="lg:hidden me-3">
+            <label for="main-drawer" class="lg:hidden mr-3">
                 <x-icon name="o-bars-3" class="cursor-pointer" />
             </label>
-        </x-slot:actions>
+
+            <x-app-brand />
+        </x-slot:brand>
+
+        @auth
+            <x-slot:actions>
+                <x-dropdown label="{{ auth()->user()->name }}" right>
+                    <x-form method="post" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit">
+                            <x-menu-item
+                                title="Logout"
+                                icon="o-arrow-right-on-rectangle"
+                                class="min-w-48"
+                            />
+                        </button>
+                    </x-form>
+                </x-dropdown>
+            </x-slot:actions>
+        @endauth
     </x-nav>
 
     <x-main full-width>
@@ -30,9 +45,6 @@
             collapsible
             class="bg-base-100 lg:bg-inherit"
         >
-
-            <x-app-brand class="p-5 pt-3" />
-
             <x-menu activate-by-route>
                 <x-menu-item
                     title="Packages"
