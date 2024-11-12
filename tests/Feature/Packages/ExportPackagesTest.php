@@ -1,44 +1,55 @@
 <?php
 
-use App\Exports\PackagesExport;
 use App\Livewire\ListPackages;
 use App\Models\Package;
+use App\Models\User;
+use App\Notifications\ExportReadyNotification;
 use Database\Seeders\PackageStatusSeeder;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Maatwebsite\Excel\Facades\Excel;
 
-it('exports packages', function () {
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\travelTo;
+
+$csvPath = 'packages 2024-11-12 1200-test123.csv';
+
+it('exports packages', function () use ($csvPath) {
     $this->seed(PackageStatusSeeder::class);
 
-    Excel::fake();
+    Notification::fake();
 
-    Package::factory(5)->create();
+    /** @var User $user */
+    $user = User::factory()->create();
+
+    actingAs($user);
+
+    travelTo(now()->setDateTimeFrom('2024-11-12 12:00'));
+
+    Package::factory(2)->create();
+
+    Str::createRandomStringsUsing(fn () => 'test123');
 
     Livewire::test(ListPackages::class)
         ->call('export')
         ->assertHasNoErrors();
 
-    $filename = 'packages-'.now()->format('Y-m-d hi').'.csv';
+    Notification::assertSentTo($user, ExportReadyNotification::class);
 
-    Excel::assertDownloaded($filename, function (PackagesExport $export) {
-        expect($export->collection()->count())->toEqual(5);
+    expect(Storage::exists("exports/$csvPath"))->toBeTrue();
 
-        $excelHeadings = $export->headings();
+    $csv = Storage::readStream("exports/$csvPath");
 
-        expect($excelHeadings)->toEqual([
-            'Tracking Code', 'Store', 'Package name',
-            'Status', 'Client', 'Phone', 'Wilaya',
-            'Commune', 'Delivery Type',
-        ]);
+    expect(fgetcsv($csv))->toEqual([
+        'Tracking Code', 'Store', 'Package name', 'Status',
+        'Client', 'Phone', 'Wilaya', 'Commune', 'Delivery Type',
+    ]);
 
-        $packageColumns = array_keys($export->collection()->first()->toArray());
+    fclose($csv);
+});
 
-        expect($packageColumns)->toEqual([
-            'tracking_code', 'name', 'client_first_name', 'client_last_name',
-            'client_phone', 'store_id', 'status_id', 'delivery_type_id', 'commune_id',
-            'store', 'status', 'delivery_type', 'commune',
-        ]);
-
-        return true;
-    });
+afterAll(function () use ($csvPath) {
+    Storage::disk('local')->delete("/exports/$csvPath");
+    Str::createRandomStringsNormally();
 });

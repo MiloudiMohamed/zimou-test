@@ -2,29 +2,30 @@
 
 namespace App\Livewire;
 
-use App\Exports\PackagesExport;
+use App\Jobs\ExportPackages;
 use App\Models\Package;
 use App\Models\PackageStatus;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Contracts\View\View;
-use Livewire\Attributes\Renderless;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Maatwebsite\Excel\Excel;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Mary\Traits\Toast;
 
 class ListPackages extends Component
 {
+    use Toast;
     use WithPagination;
 
-    #[Renderless]
-    public function export(): BinaryFileResponse
+    public function export()
     {
-        $filename = 'packages-'.now()->format('Y-m-d hi').'.csv';
+        ExportPackages::dispatch(Auth::user())->onQueue('exports');
 
-        return (new PackagesExport)->download($filename, Excel::CSV, [
-            'Content-Type' => 'text/csv',
-        ]);
+        $this->success(
+            title: 'Export has been started',
+            description: 'Your export is being processed. we will email you when it is finished.',
+            timeout: 10000,
+        );
     }
 
     public function render(): View
