@@ -18,11 +18,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/', ListPackages::class)->name('packages.index');
+    Route::get('/packages', ListPackages::class)->name('packages.index');
     Route::get('/packages/create', CreatePackage::class)->name('packages.create');
 });
 
 Route::group(['middleware' => 'guest'], function () {
+    Route::view('/', 'home')->name('home');
     Route::get('/auth/login', Login::class)->name('login');
     Route::get('/auth/register', Register::class)->name('register');
 });

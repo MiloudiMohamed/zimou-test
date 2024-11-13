@@ -5,12 +5,13 @@
         <div class="col-span-2 space-y-4">
             <x-card title="Basic information" shadow>
                 <div class="space-y-4">
-                    <x-select
+                    <x-choices
                         wire:model="form.store_id"
-                        label="Stores*"
-                        inline
-                        placeholder="Select a store"
                         :options="$stores"
+                        search-function="searchStores"
+                        placeholder="Select a store"
+                        single
+                        searchable
                     />
 
                     <x-input

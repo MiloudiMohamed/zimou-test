@@ -10,6 +10,7 @@ use App\Models\Store;
 use App\Models\Wilaya;
 use App\Support\PackagePriceCalculator;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -19,7 +20,9 @@ class CreatePackage extends Component
 {
     use Toast;
 
-    public $wilayaId = null;
+    public ?int $wilayaId = null;
+
+    public Collection $stores;
 
     public array $form = [
         'store_id' => '',
@@ -48,7 +51,12 @@ class CreatePackage extends Component
         'can_be_opened' => true,
     ];
 
-    public function store()
+    public function mount(): void
+    {
+        $this->searchStores();
+    }
+
+    public function store(): void
     {
         $validated = $this->validate();
 
@@ -85,21 +93,31 @@ class CreatePackage extends Component
     }
 
     #[Computed()]
-    public function communes()
+    public function communes(): Collection
     {
         return Commune::where('wilaya_id', $this->wilayaId)->get();
+    }
+
+    public function searchStores(string $search = ''): void
+    {
+        $this->stores = Store::query()
+            ->select(columns: ['id', 'name'])
+            ->where('name', 'like', "%{$search}%")
+            ->orWhere('id', $this->form['store_id'])
+            ->take(10)
+            ->active()
+            ->get();
     }
 
     public function render(): View
     {
         return view('livewire.packages.create', [
-            'stores' => Store::active()->get(),
             'wilayas' => Wilaya::all(),
             'deliveryTypes' => DeliveryType::all(),
         ]);
     }
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
             'form.store_id' => ['required', Rule::exists(Store::class, 'id')->where('status', true)],
@@ -128,7 +146,7 @@ class CreatePackage extends Component
         ];
     }
 
-    public function validationAttributes()
+    protected function validationAttributes(): array
     {
         return [
             'form.store_id' => 'store',

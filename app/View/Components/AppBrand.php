@@ -11,7 +11,7 @@ class AppBrand extends Component
     public function render(): View|Closure|string
     {
         return <<<'HTML'
-                <a href="/" wire:navigate>
+                <a href="{{ route('packages.index') }}" wire:navigate>
                     <div {{ $attributes->class(["hidden-when-collapsed"]) }}>
                         <div class="flex items-center gap-2">
                             <x-icon name="o-square-3-stack-3d" class="w-6 -mb-1 text-purple-500" />

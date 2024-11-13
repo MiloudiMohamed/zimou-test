@@ -74,6 +74,7 @@ class StoreSeeder extends Seeder
         $progressBar->start();
 
         DB::connection()->getPdo()->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+
         foreach (array_chunk($packages, 5000) as $chunk) {
             DB::table('packages')->insert($chunk);
             $progressBar->advance(5000);

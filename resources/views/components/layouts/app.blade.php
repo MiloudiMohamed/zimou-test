@@ -49,7 +49,7 @@
                 <x-menu-item
                     title="Packages"
                     icon="o-cube"
-                    link="/"
+                    link="{{ route('packages.index') }}"
                 />
             </x-menu>
         </x-slot:sidebar>
